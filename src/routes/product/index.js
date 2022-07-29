@@ -1,6 +1,6 @@
 const express = require('express');
 const router = new express.Router();
-const {getAllProducts,createProducto,deleteProduct} = require("./utils");
+const {getAllProducts,createProducto,deleteProduct,updateProduct} = require("./utils");
 
 router.get("/products",async(req,res)=>{
     try{
@@ -60,6 +60,32 @@ router.post("/products/add",async(req,res)=>{
     }
 
 });
+router.patch("/products/update",async(req,res)=>{
+    try {
+        const request = req.body
+
+        const updatedProduct = await updateProduct(
+            request._id,
+            request.nombre,
+            request.tipoProducto,
+            request.operarioResponsable,
+            request.tipoEmpaque
+        )
+        res.status(200).send({
+            status: true,
+            message: "Successful Product update",
+            data: updatedProduct.message
+            
+        })
+    } catch (error) {
+        console.log(error)
+        res.status(200).send({
+            status: false,
+            message: "Failed Update",
+            data: { error: error.toString() }
+        })
+    }
+});
 
 router.delete("/products/delete/:idproduct",async(req,res)=>{
     try {
@@ -85,5 +111,10 @@ router.delete("/products/delete/:idproduct",async(req,res)=>{
         )
     }
 });
+
+
+
+
+
 
 module.exports=router
